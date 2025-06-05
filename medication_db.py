@@ -59,15 +59,15 @@ def seed_data():
     # Seed data for medications
     medications = [
         (
-            "1234567890",
+            "147096608423",
             "Aspirin",
             "Reduces pain, fever, and inflammation.",
             "Take with water after meals.",
             "1 tablet, up to 3 times a day",
-            "08,15,19,20,21"
+            "08,13,14,15,19,20,21"
         ),
         (
-            "0987654321",
+            "178263771321",
             "Vitamin D",
             "Supports calcium absorption and bone health.",
             "Take with food once a week.",
@@ -75,20 +75,12 @@ def seed_data():
             "09"
         ),
         (
-            "1122334455",
+            "215778743094",
             "Ibuprofen",
             "Used for pain relief and inflammation.",
             "Take with food or milk to reduce stomach upset.",
             "1 tablet every 6 hours as needed; max 4 per day",
             ""
-        ),
-        (
-            "2233445566",
-            "Metformin",
-            "Helps control blood sugar levels in type 2 diabetes.",
-            "Take with meals to reduce gastrointestinal side effects.",
-            "500 mg, twice daily",
-            "15,20"
         ),
     ]
 
@@ -117,5 +109,3 @@ def seed_data():
 
 # init_db()
 # seed_data()
-# info = get_medication_info("1234567890")  # Example usage to retrieve medication info
-# print(info)  # Output: ('Aspirin', 'Take one tablet daily after meals', '08:00')
