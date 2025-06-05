@@ -5,16 +5,19 @@
 @Path: /rfid_reader.py
 """
 
+import RPi.GPIO as GPIO
+from mfrc522 import SimpleMFRC522
+
+reader = SimpleMFRC522()
 
 def read_rfid():
-    """
-    Simulates or reads an RFID tag ID.
-    Replace the input() simulation with actual RFID reader code if hardware is available.
-    """
     try:
-        # Simulate RFID input for testing
-        tag_id = input("Scan RFID tag or enter tag ID: ")
-        return tag_id.strip()
+        print("Please place your RFID card near the reader...")
+        id, _ = reader.read()
+        print(f"Card UID: {id}")
+        return str(id).strip()  # Return UID as a string without extra spaces
     except KeyboardInterrupt:
-        print("\nExiting RFID reader.")
+        print("Program interrupted.")
         return None
+    finally:
+        GPIO.cleanup()

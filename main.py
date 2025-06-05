@@ -9,11 +9,11 @@
 import threading
 
 from medication_db import get_medication_info, init_db
-from medication_scheduler import run_scheduler
+from medication_scheduler import run_scheduler, has_taken_this_hour, is_time_to_take
 from rfid_reader import read_rfid
+from telegram import InlineKeyboardButton
 from telegram_bot_server import message_queue, start_bot
-from telegram_notifier import queue_medication_info
-
+from telegram_notifier import queue_msg
 
 def handle_rfid():
     while True:
@@ -25,8 +25,19 @@ def handle_rfid():
         print(f"Medication info: {med}")
         if not med:
             continue
-        name, desc, usage, dosage, schedule = med
-        queue_medication_info(message_queue, tag_id, name, desc, usage, dosage, schedule)
+        name, desc, usage, dosage, scheduler_str = med
+        msg = f"💊 *{name}*\n_{desc}_\n\nUsage: {usage}\nDosage: {dosage}"
+        queue_msg(message_queue, msg)
+        if is_time_to_take(scheduler_str) and not has_taken_this_hour(tag_id):
+            msg = f"Did you take your medication: {name} ({usage})?"
+            buttons = [[
+                InlineKeyboardButton("✅ Taken", callback_data=f"taken:{tag_id}"),
+                InlineKeyboardButton("❌ Skipped", callback_data=f"skipped:{tag_id}")
+            ]]
+            queue_msg(message_queue, msg, buttons)
+        else:
+            print(f"Not time to take {name} yet.")
+        
 
 def main():
     init_db()

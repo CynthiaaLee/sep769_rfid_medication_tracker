@@ -12,10 +12,33 @@ from datetime import datetime
 
 import schedule
 
+from telegram_notifier import queue_msg
 from telegram_bot_server import message_queue
-from telegram_notifier import queue_medication_info
+from medication_logger import get_logs_for_today
 
 DB_NAME = "medication_tracker.db"
+
+def has_taken_this_hour(tag_id):
+    """
+    Check if the medication has already been logged during the current hour today.
+    """
+    logs = get_logs_for_today(tag_id)
+    print(f"Logs for today for {tag_id}: {logs}")
+    current_hour = datetime.now().hour
+    for log in logs:
+        log_hour = datetime.fromisoformat(log[4]).hour
+        if log_hour == current_hour:
+            return True
+    return False
+
+def is_time_to_take(schedule):
+    """
+    Check if it's time to take the medication based on schedule string.
+    """
+    now_hour = datetime.now().hour
+    hours = [int(h.strip()) for h in schedule.split(",") if h.strip().isdigit()]
+    print(f"Current hour: {now_hour}, Scheduled hours: {hours}")
+    return now_hour in hours
 
 def get_all_medications():
     """
@@ -23,23 +46,21 @@ def get_all_medications():
     """
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    cursor.execute("SELECT tag_id, name, schedule FROM medications")
+    cursor.execute("SELECT tag_id, name, description, usage, dosage, schedule FROM medications")
     rows = cursor.fetchall()
     conn.close()
     return rows
 
 def check_and_remind():
-    current_hour = datetime.now().hour
     medications = get_all_medications()
-    print(medications)
-
-    for tag_id, name, schedule_str in medications:
+    for tag_id, name, _, usage, _, schedule_str in medications:
         if not schedule_str:
             continue
         try:
-            hours = [int(h.strip()) for h in schedule_str.split(",")]
-            if current_hour in hours:
-                queue_medication_info(message_queue, tag_id, name, desc, usage, dosage, schedule_str)
+            should_take = is_time_to_take(schedule_str) and not has_taken_this_hour(tag_id)
+            if should_take:
+                msg = f"⏰ Time to take your medication: {name} ({usage})"
+                queue_msg(message_queue, msg)
         except ValueError:
             print(f"Invalid schedule format for {name}: {schedule_str}")
 
