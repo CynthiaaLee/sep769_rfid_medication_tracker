@@ -65,7 +65,7 @@ def check_and_remind():
             print(f"Invalid schedule format for {name}: {schedule_str}")
 
 def run_scheduler():
-    schedule.every(1).minutes.do(check_and_remind)
+    schedule.every(10).minutes.do(check_and_remind)
     print("Scheduler started with `schedule` module. Press Ctrl+C to stop.")
     while True:
         schedule.run_pending()

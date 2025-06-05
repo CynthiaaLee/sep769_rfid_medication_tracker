@@ -30,7 +30,6 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             tag_id TEXT NOT NULL,
             action TEXT NOT NULL,
-            amount TEXT,
             timestamp TEXT NOT NULL,
             FOREIGN KEY(tag_id) REFERENCES medications(tag_id)
         )
