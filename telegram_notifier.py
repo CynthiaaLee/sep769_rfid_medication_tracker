@@ -14,6 +14,7 @@ from telegram.ext import ContextTypes
 from config import CHAT_ID
 from medication_logger import get_logs_for_today, log_medication
 
+
 def queue_msg(queue, msg, buttons=None):
     """
     Queue medication information for sending to Telegram.

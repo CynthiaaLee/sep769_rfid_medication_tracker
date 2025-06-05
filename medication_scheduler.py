@@ -12,9 +12,9 @@ from datetime import datetime
 
 import schedule
 
-from telegram_notifier import queue_msg
-from telegram_bot_server import message_queue
 from medication_logger import get_logs_for_today
+from telegram_bot_server import message_queue
+from telegram_notifier import queue_msg
 
 DB_NAME = "medication_tracker.db"
 

@@ -8,12 +8,15 @@
 
 import threading
 
-from medication_db import get_medication_info, init_db
-from medication_scheduler import run_scheduler, has_taken_this_hour, is_time_to_take
-from rfid_reader import read_rfid
 from telegram import InlineKeyboardButton
+
+from medication_db import get_medication_info, init_db
+from medication_scheduler import (has_taken_this_hour, is_time_to_take,
+                                  run_scheduler)
+from rfid_reader import read_rfid
 from telegram_bot_server import message_queue, start_bot
 from telegram_notifier import queue_msg
+
 
 def handle_rfid():
     while True:
